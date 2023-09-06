@@ -31,7 +31,7 @@ else:
     exit()
 
 if save_dir is None:
-    save_dir = "save_checkpoint.pth"
+    save_dir = "model_data/save_checkpoint.pth"
     
 if learning_rate is None:
     learning_rate = 0.001

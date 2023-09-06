@@ -1,25 +1,29 @@
-from middleware import *
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash
+import os
+import json
+import torch
+import torch.nn.functional as F
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import interactive
+from torch import nn
+from PIL import Image
+from collections import OrderedDict
+from torchvision import datasets, transforms, models
+import time
+import uuid
 
-parser = argparse.ArgumentParser()
-parser.add_argument('image_path')
-parser.add_argument('checkpoint')
-parser.add_argument('--top_k')
-parser.add_argument('--category_names')
-parser.add_argument('--gpu')
-args = parser.parse_args()
-image_path = args.image_path
-checkpoint = args.checkpoint
-top_k = args.top_k
-category_names = args.category_names
-device = args.gpu
+app = Flask(__name__)
 
-# user did not provide value, set default
-if top_k is None:
-    top_k = 5
-    
-if device is None:
-    device = "cpu"
+# Configure a folder where uploaded files will be stored
+app.config['UPLOAD_FOLDER'] = 'uploads'
 
+# Set the default values if needed
+top_k = 5
+device = "cpu"
+category_names = None
+
+# Load the category names
 if category_names is None:
     with open('cat_to_name.json', 'r') as f:
         cat_to_name = json.load(f)
@@ -31,6 +35,36 @@ else:
     else:
         with open(category_names, 'r') as f:
             cat_to_name = json.load(f)
+
+data_dir = 'flower_data'
+train_dir = data_dir + '/train'
+valid_dir = data_dir + '/valid'
+test_dir = data_dir + '/test'
+
+# TODO: Define your transforms for the training, validation, and testing sets
+data_transforms = {'train': transforms.Compose([transforms.RandomRotation(30),
+                                                transforms.RandomResizedCrop(224),
+                                                transforms.RandomHorizontalFlip(),
+                                                transforms.ToTensor(),
+                                                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]),
+                   'valid': transforms.Compose([transforms.Resize(256),
+                                                transforms.CenterCrop(224),
+                                                transforms.ToTensor(),
+                                                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]),
+                   'test': transforms.Compose([transforms.Resize(256),
+                                               transforms.CenterCrop(224),
+                                               transforms.ToTensor(),
+                                               transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
+                   }
+
+# TODO: Load the datasets with ImageFolder
+directories = {'train': train_dir, 
+               'valid': valid_dir, 
+               'test' : test_dir}
+
+image_datasets = {x: datasets.ImageFolder(directories[x], transform=data_transforms[x])
+                  for x in ['train', 'valid', 'test']}
+
     
 # Write a function that loads a checkpoint and rebuilds the model
 def loading_model(checkpoint_path):
@@ -105,9 +139,7 @@ def imshow(image, ax=None, title=None):
     
     # Image needs to be clipped between 0 and 1 or it looks like noise when displayed
     image = np.clip(image, 0, 1)
-    
-    ax.imshow(image)
-    
+        
     return ax
 
 def predict(image_path, model, topk = top_k):
@@ -136,47 +168,43 @@ def predict(image_path, model, topk = top_k):
    
     return score, flowers_list
 
-# Display an image along with the top 5 classes
-def display_top(image_path, model, save_result_dir):
-   
-    # Setting plot area
-    plt.figure(figsize = (3,6))
-    ax = plt.subplot(1,1,1)
-    # Display test flower
-    img = process_image(image_path)
-    get_title  = image_path.split('/')
-    print(cat_to_name[get_title[2]])
-    
-    imshow(img, ax, title = cat_to_name[get_title[2]])
-    
-    # Making prediction
-    score, flowers_list = predict(image_path, model) 
-    fig,ax = plt.subplots(figsize=(10,10))
-    sticks = np.arange(len(flowers_list))
-    ax.barh(sticks, score, height=0.3, linewidth=2.0, align = 'center')
-    ax.set_yticks(ticks = sticks)
-    ax.set_yticklabels(flowers_list)
-    plt.savefig(save_result_dir)
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'jpg', 'jpeg', 'png'}
 
-image_path = 'flower_data/test/28/image_05277.jpg'
-get_title  = image_path.split('/')
-print("Test image:" + cat_to_name[get_title[2]])
-save_result_dir = 'save_prediction_result_1'
-display_top(image_path, model, save_result_dir)
-print("Save prediction result to:" + save_result_dir)
-print("Prediction result:")
-score, flower_list = predict(image_path, model)
-print(flower_list)
-print(np.exp(score))
-print("-------------------------------------------")
-image_path = 'flower_data/test/1/image_06752.jpg'
-get_title  = image_path.split('/')
-print("Test image:" + cat_to_name[get_title[2]])
-save_result_dir = 'save_prediction_result_2'
-display_top(image_path, model, save_result_dir)
-print("Save prediction result to:" + save_result_dir)
-print("Prediction result:")
-score, flower_list = predict(image_path, model)
-print(flower_list)
-print(np.exp(score))
-print("-------------------------------------------")
+@app.route('/', methods=['GET', 'POST'])
+def classify_image():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+
+        file = request.files['file']
+
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+
+        if file and allowed_file(file.filename):
+            # Generate a unique filename based on timestamp and uuid
+            unique_filename = f"{int(time.time())}_{str(uuid.uuid4())[:8]}_{file.filename}"
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+            file.save(file_path)
+            
+            # Perform image classification
+            score, flower_list = predict(file_path, model)
+            probability = np.exp(score).tolist()
+            
+            # Pass the filename without the path
+            filename = unique_filename
+
+            zipped_data = zip(flower_list, probability)
+            return render_template('index.html', image_name=filename, zipped_data=zipped_data)
+
+    return render_template('index.html')
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+if __name__ == '__main__':
+    app.run(debug=True)

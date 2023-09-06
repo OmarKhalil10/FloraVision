@@ -18,7 +18,7 @@ from collections import OrderedDict
 from torchvision import datasets, transforms, models
 
 
-data_dir = 'flowers'
+data_dir = 'flower_data'
 train_dir = data_dir + '/train'
 valid_dir = data_dir + '/valid'
 test_dir = data_dir + '/test'

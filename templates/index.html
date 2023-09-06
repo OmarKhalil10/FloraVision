@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classifier</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+
+<body>
+    <h1>Image Classifier</h1>
+
+    <form action="/" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".jpg, .jpeg, .png" required>
+        <input type="submit" value="Classify">
+    </form>
+
+    <h2>Test Image</h2>
+    <p>{{ image_name }}</p>
+
+    <h2>Prediction Result and Probabilities</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Prediction Result</th>
+                <th>Probabilities</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flower, prob in zipped_data %}
+            <tr>
+                <td>{{ flower }}</td>
+                <td>{{ prob }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>Uploaded Image</h2>
+    <img src="{{ url_for('uploaded_file', filename=image_name) }}" alt="Uploaded Image" width="400">
+</body>
+</html>
