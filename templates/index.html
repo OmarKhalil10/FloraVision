@@ -1,45 +1,174 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
+
 <head>
+
+    <!-- Meta -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Flowers Classifier &amp; FloraVision">
+    <meta name="keywords" content="FloraVision">
+    <meta name="author" content="Omar Khalil">
+
+    <!-- Title -->
+    <title>FloraVision</title>
+
+    <!-- Fonts -->
+    <link href="static/css/css.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="static/css/min-styles.css">
+    <link rel="stylesheet" href="static/css/fontawesome.css">
+    <link rel="stylesheet" href="static/css/brands.css">
+    <link rel="stylesheet" href="static/css/solid.css">
     <link rel="stylesheet" href="static/css/styles.css">
-    <title>Image Classification</title>
+    <link rel="stylesheet" href="static/css/prompt.css">
+    <link rel="shortcut icon" href="templates/favicon.ico">
+
 </head>
-<body>
-<main class="main_full">
-    <div class="container">
-        <div class="panel">
-            <div class="button_outer">
-                <div class="btn_upload">
-                    <input type="file" id="upload_file" name="">
-                    Upload Image
+
+<body class="home">
+
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="centrize full-width">
+            <div class="vertical-center">
+                <div class="spinner">
+                    <div class="double-bounce1"></div>
+                    <div class="double-bounce2"></div>
                 </div>
-                <div class="processing_bar"></div>
-                <div class="success_box"></div>
-            </div>
-        </div>
-        <div class="error_msg"></div>
-        <div class="uploaded_file_view" id="uploaded_view">
-            <span class="file_remove">X</span>
-        </div>
-        <div class="classification_result">
-            <h2 id="image_name"></h2>
-            <div class="table-container" style="display: none;">
-                <table id="result_table">
-                    <thead>
-                        <tr>
-                            <th>Prediction Result</th>
-                            <th>Probability</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
             </div>
         </div>
     </div>
-</main>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="static/js/script.js"></script>
+
+    <!-- Container -->
+    <div class="container">
+
+        <!-- Cursor -->
+        <div class="cursor-follower"></div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="head-top">
+
+                <!-- menu button -->
+				<a href="#" class="menu-btn"><span></span></a>
+
+                <!-- logo -->
+                <div class="logo hover-masks-logo">
+                    <div class="button_outer">
+                        <div class="btn_upload">
+                            <input type="file" id="upload_file" name="">
+                            Upload Image
+                        </div>
+                        <div class="processing_bar"></div>
+                        <div class="success_box"></div>
+                    </div>
+                </div>
+
+                <!-- top menu -->
+                <div class="top-menu hover-masks">
+                    <div class="top-menu-nav">
+                        <div class="menu-topmenu-container">
+                            <button style="color: white;" type="button" id="btnConfirm">How To Use</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="error_msg"></div>
+            <div class="uploaded_file_view" id="uploaded_view">
+                <span class="file_remove">X</span>
+            </div>
+            <div class="classification_result">
+                <h2 id="image_name"></h2>
+                <div class="table-container" style="display: none;">
+                    <table id="result_table">
+                        <thead>
+                            <tr>
+                                <th>Prediction Result</th>
+                                <th>Probability</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </header>
+
+        <!-- Wrapper -->
+        <div class="wrapper">
+
+            <!-- Section Started -->
+            <div class="section started" id="section-started">
+
+                <!-- background -->
+                <div class="video-bg">
+                    <div class="video-bg-mask"></div>
+                    <div class="video-bg-texture" id="grained_container"></div>
+
+                    <!-- slider -->
+                    <div class="started-carousel">
+                        <div class="swiper-container">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide first">
+                                    <div class="main-img"
+                                        style="background-image: url(static/images/first_image.jpg);"></div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="main-img"
+                                        style="background-image: url(static/images/second_image.jpg);"></div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="main-img"
+                                        style="background-image: url(static/images/third_image.jpg);"></div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="main-img"
+                                        style="background-image: url(static/images/fourth_image.jpg);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="soc-box">
+                <div class="follow-label">Follow Me</div>
+                <div class="soc">
+                    <a target="_blank" href="https://www.pinterest.com/">
+                        <span class="icon fab fa-medium-m"></span>
+                    </a>
+                    <a target="_blank" href="https://www.instagram.com/">
+                        <span class="icon fab fa-github"></span>
+                    </a>
+                    <a target="_blank" href="https://dribbble.com/">
+                        <span class="icon fab fa-linkedin-in"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </footer>
+
+        <!-- Lines -->
+        <div class="lines">
+            <div class="line-col"></div>
+            <div class="line-col"></div>
+            <div class="line-col"></div>
+            <div class="line-col"></div>
+            <div class="line-col"></div>
+        </div>
+
+    </div>
+
+    <script src="static/js/min.scripts.js"></script>
+    <script src="static/js/prompt.js"></script>
+    <script src="static/js/scripts.js"></script>
+
 </body>
+
 </html>

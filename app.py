@@ -195,11 +195,12 @@ def classify_image():
         # Perform image classification
         score, flower_list = predict(file_path, model)
         probability = np.exp(score).tolist()
+        probability_rounded = [round(p, 5) for p in probability]
         
         # Pass the filename without the path
         filename = unique_filename
 
-        zipped_data = list(zip(flower_list, probability))
+        zipped_data = list(zip(flower_list, probability_rounded))
 
         # Return JSON response
         response_data = {

@@ -1,35 +1,18 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background: #f6f6f6;
-    color: #444;
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    line-height: 1;
-}
-
-.container {
-    max-width: 1100px;
-    padding: 0 20px;
-    margin: 0 auto;
-}
-
 .panel {
-    margin: 100px auto 40px;
+    margin: 0px auto 20px;
+    /* Adjusted margin for centering and shifted up */
     max-width: 500px;
     text-align: center;
 }
 
 .button_outer {
     background: #83ccd3;
-    border-radius: 30px;
+    border-radius: 20px;
     text-align: center;
-    height: 50px;
-    width: 200px;
+    height: auto;
+    /* Adjusted width for better responsiveness */
+    max-width: 300px;
+    /* Added max-width to prevent stretching */
     display: inline-block;
     transition: .2s;
     position: relative;
@@ -37,12 +20,11 @@ body {
 }
 
 .btn_upload {
-    padding: 17px 30px 12px;
+    padding: 4px 15px 4px;
     color: #fff;
     text-align: center;
     position: relative;
     display: inline-block;
-    overflow: hidden;
     z-index: 3;
     white-space: nowrap;
 }
@@ -119,8 +101,9 @@ body {
 }
 
 .uploaded_file_view {
-    max-width: 300px;
-    margin: 40px auto;
+    max-width: 200px;
+    max-height: 185px;
+    margin: 30px auto;
     text-align: center;
     position: relative;
     transition: .2s;
@@ -150,7 +133,9 @@ body {
 }
 
 .uploaded_file_view img {
-    max-width: 100%;
+    max-width: 150px;
+    max-height: 150px;
+    /* Maintain aspect ratio */
 }
 
 .uploaded_file_view.show {
@@ -159,43 +144,39 @@ body {
 
 .error_msg {
     text-align: center;
-    color: #f00
+    color: #f00;
 }
 
 /* Center the table and add styles for better appearance */
 .table-container {
-    margin: 20px auto;
-    max-width: 80%;
+    margin: -50px auto 0;
+    /* Adjusted margin for centering and shifted up */
+    max-width: 100%;
+    /* Made the table container expand to the available width */
     overflow-x: auto;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    /* Center the table horizontally */
+    align-items: center;
+    /* Center the table vertically */
 }
 
 #result_table {
     width: 100%;
     border-collapse: collapse;
+    max-width: 50%;
+    /* Limit the table width for better appearance */
 }
 
-#result_table th, #result_table td {
-    padding: 10px 15px;
+#result_table th,
+#result_table td {
     text-align: left;
-    border-bottom: 1px solid #ddd;
 }
 
-#result_table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-}
-
-#result_table tbody tr:nth-child(even) {
-    background-color: #f5f5f5;
-}
-
-#result_table tbody tr:hover {
-    background-color: #e0e0e0;
-}
-
+/* Center the image name */
 #image_name {
     text-align: center;
+    font-size: 12px; /* Make the font size smaller */
+    color: #fff; /* Change text color to white */
+    padding: 5px 10px; /* Adjust padding for better appearance */
 }
