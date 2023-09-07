@@ -1,43 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Classifier</title>
     <link rel="stylesheet" href="static/css/styles.css">
+    <title>Image Classification</title>
 </head>
-
 <body>
-    <h1>Image Classifier</h1>
-
-    <form action="/" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".jpg, .jpeg, .png" required>
-        <input type="submit" value="Classify">
-    </form>
-
-    <h2>Test Image</h2>
-    <p>{{ image_name }}</p>
-
-    <h2>Prediction Result and Probabilities</h2>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Prediction Result</th>
-                <th>Probabilities</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for flower, prob in zipped_data %}
-            <tr>
-                <td>{{ flower }}</td>
-                <td>{{ prob }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <h2>Uploaded Image</h2>
-    <img src="{{ url_for('uploaded_file', filename=image_name) }}" alt="Uploaded Image" width="400">
+<main class="main_full">
+    <div class="container">
+        <div class="panel">
+            <div class="button_outer">
+                <div class="btn_upload">
+                    <input type="file" id="upload_file" name="">
+                    Upload Image
+                </div>
+                <div class="processing_bar"></div>
+                <div class="success_box"></div>
+            </div>
+        </div>
+        <div class="error_msg"></div>
+        <div class="uploaded_file_view" id="uploaded_view">
+            <span class="file_remove">X</span>
+        </div>
+        <div class="classification_result">
+            <h2 id="image_name"></h2>
+            <div class="table-container" style="display: none;">
+                <table id="result_table">
+                    <thead>
+                        <tr>
+                            <th>Prediction Result</th>
+                            <th>Probability</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="static/js/script.js"></script>
 </body>
 </html>

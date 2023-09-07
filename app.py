@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash, jsonify
 import os
 import json
 import torch
@@ -171,36 +171,44 @@ def predict(image_path, model, topk = top_k):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'jpg', 'jpeg', 'png'}
 
-@app.route('/', methods=['GET', 'POST'])
-def classify_image():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-
-        file = request.files['file']
-
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-
-        if file and allowed_file(file.filename):
-            # Generate a unique filename based on timestamp and uuid
-            unique_filename = f"{int(time.time())}_{str(uuid.uuid4())[:8]}_{file.filename}"
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            file.save(file_path)
-            
-            # Perform image classification
-            score, flower_list = predict(file_path, model)
-            probability = np.exp(score).tolist()
-            
-            # Pass the filename without the path
-            filename = unique_filename
-
-            zipped_data = zip(flower_list, probability)
-            return render_template('index.html', image_name=filename, zipped_data=zipped_data)
-
+@app.route('/', methods=['GET'])
+def display_form():
+    # Render the HTML form for image upload
     return render_template('index.html')
+
+@app.route('/', methods=['POST'])
+def classify_image():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'})
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'})
+
+    if file and allowed_file(file.filename):
+        # Generate a unique filename based on timestamp and uuid
+        unique_filename = f"{int(time.time())}_{str(uuid.uuid4())[:8]}_{file.filename}"
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+        file.save(file_path)
+        
+        # Perform image classification
+        score, flower_list = predict(file_path, model)
+        probability = np.exp(score).tolist()
+        
+        # Pass the filename without the path
+        filename = unique_filename
+
+        zipped_data = list(zip(flower_list, probability))
+
+        # Return JSON response
+        response_data = {
+            'image_name': filename,
+            'zipped_data': zipped_data
+        }
+        return jsonify(response_data)
+
+    return jsonify({'error': 'Invalid file format'})
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):

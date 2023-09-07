@@ -1,115 +1,201 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh; /* Ensure a minimum height */
-    overflow-x: hidden; /* Prevent horizontal overflow */
-}
-
-h1 {
-    font-size: 36px;
-    color: #333;
-    margin-bottom: 20px;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 80%; /* Adjust as needed */
-    max-width: 400px; /* Set a maximum width */
-    padding: 20px;
-    background-color: #fff; /* Add a background to form for better visibility */
-    border-radius: 10px;
-}
-
-input[type="file"] {
-    padding: 10px;
-    border: none;
-    background-color: #f5f5f5; /* Change background color */
-    border-radius: 5px;
-    font-size: 16px;
-    margin-bottom: 20px;
-    max-width: 100%; /* Adjust as needed */
-    width: 100%; /* Use full width of parent container */
     box-sizing: border-box;
 }
 
-input[type="submit"] {
-    background-color: #008000;
-    color: #fff;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background-color 0.3s ease;
-    max-width: 100%; /* Adjust as needed */
-    width: 100%; /* Use full width of parent container */
+body {
+    background: #f6f6f6;
+    color: #444;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    line-height: 1;
 }
 
-input[type="submit"]:hover {
-    background-color: #005700;
+.container {
+    max-width: 1100px;
+    padding: 0 20px;
+    margin: 0 auto;
 }
 
-h2 {
-    font-size: 24px;
-    color: #333;
-    margin-top: 20px;
+.panel {
+    margin: 100px auto 40px;
+    max-width: 500px;
     text-align: center;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
+.button_outer {
+    background: #83ccd3;
+    border-radius: 30px;
+    text-align: center;
+    height: 50px;
+    width: 200px;
+    display: inline-block;
+    transition: .2s;
+    position: relative;
+    overflow: hidden;
 }
 
-li {
-    font-size: 18px;
-    color: #333;
-    margin-left: 20px;
-    margin-top: 10px;
+.btn_upload {
+    padding: 17px 30px 12px;
+    color: #fff;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    z-index: 3;
+    white-space: nowrap;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
+.btn_upload input {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 105%;
+    cursor: pointer;
+    opacity: 0;
+}
+
+.file_uploading {
+    width: 100%;
+    height: 10px;
     margin-top: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    max-height: 80vh; /* Ensure the image doesn't exceed the viewport height */
+    background: #ccc;
 }
 
-/* Add this CSS to your styles.css file */
-table {
+.file_uploading .btn_upload {
+    display: none;
+}
+
+.processing_bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 100%;
+    border-radius: 30px;
+    background: #83ccd3;
+    transition: 3s;
+}
+
+.file_uploading .processing_bar {
+    width: 100%;
+}
+
+.success_box {
+    display: none;
+    width: 50px;
+    height: 50px;
+    position: relative;
+}
+
+.success_box:before {
+    content: '';
+    display: block;
+    width: 9px;
+    height: 18px;
+    border-bottom: 6px solid #fff;
+    border-right: 6px solid #fff;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    position: absolute;
+    left: 17px;
+    top: 10px;
+}
+
+.file_uploaded .success_box {
+    display: inline-block;
+}
+
+.file_uploaded {
+    margin-top: 0;
+    width: 50px;
+    background: #83ccd3;
+    height: 50px;
+}
+
+.uploaded_file_view {
+    max-width: 300px;
+    margin: 40px auto;
+    text-align: center;
+    position: relative;
+    transition: .2s;
+    opacity: 0;
+    border: 2px solid #ddd;
+    padding: 15px;
+}
+
+.file_remove {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: block;
+    position: absolute;
+    background: #aaa;
+    line-height: 30px;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    right: -15px;
+    top: -15px;
+}
+
+.file_remove:hover {
+    background: #222;
+    transition: .2s;
+}
+
+.uploaded_file_view img {
     max-width: 100%;
+}
+
+.uploaded_file_view.show {
+    opacity: 1;
+}
+
+.error_msg {
+    text-align: center;
+    color: #f00
+}
+
+/* Center the table and add styles for better appearance */
+.table-container {
+    margin: 20px auto;
+    max-width: 80%;
+    overflow-x: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+#result_table {
+    width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
 }
 
-th, td {
-    padding: 10px;
+#result_table th, #result_table td {
+    padding: 10px 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
-th {
-    background-color: #008000;
-    color: white;
-}
-
-tr:nth-child(even) {
+#result_table th {
     background-color: #f2f2f2;
+    font-weight: bold;
 }
 
-tr:hover {
-    background-color: #ddd;
+#result_table tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
 }
 
+#result_table tbody tr:hover {
+    background-color: #e0e0e0;
+}
+
+#image_name {
+    text-align: center;
+}
