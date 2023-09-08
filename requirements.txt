@@ -4,7 +4,6 @@ flask
 flask-cors
 numpy
 werkzeug
-gunicorn
 matplotlib
 
 --extra-index-url https://download.pytorch.org/whl/cpu

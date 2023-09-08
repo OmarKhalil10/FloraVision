@@ -35,36 +35,6 @@ else:
     else:
         with open(category_names, 'r') as f:
             cat_to_name = json.load(f)
-
-data_dir = 'flower_data'
-train_dir = data_dir + '/train'
-valid_dir = data_dir + '/valid'
-test_dir = data_dir + '/test'
-
-# TODO: Define your transforms for the training, validation, and testing sets
-data_transforms = {'train': transforms.Compose([transforms.RandomRotation(30),
-                                                transforms.RandomResizedCrop(224),
-                                                transforms.RandomHorizontalFlip(),
-                                                transforms.ToTensor(),
-                                                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]),
-                   'valid': transforms.Compose([transforms.Resize(256),
-                                                transforms.CenterCrop(224),
-                                                transforms.ToTensor(),
-                                                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]),
-                   'test': transforms.Compose([transforms.Resize(256),
-                                               transforms.CenterCrop(224),
-                                               transforms.ToTensor(),
-                                               transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
-                   }
-
-# TODO: Load the datasets with ImageFolder
-directories = {'train': train_dir, 
-               'valid': valid_dir, 
-               'test' : test_dir}
-
-image_datasets = {x: datasets.ImageFolder(directories[x], transform=data_transforms[x])
-                  for x in ['train', 'valid', 'test']}
-
     
 # Write a function that loads a checkpoint and rebuilds the model
 def loading_model(checkpoint_path):
@@ -147,7 +117,6 @@ def predict(image_path, model, topk = top_k):
     '''
     
     # Implement the code to predict the class from an image file
-    model.class_to_idx = image_datasets['train'].class_to_idx
     model.to(device)
     img_torch = process_image(image_path)
     img_torch = torch.from_numpy(img_torch).type(torch.FloatTensor)
@@ -216,4 +185,4 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0',port=int(os.environ.get('PORT', 8080)))
